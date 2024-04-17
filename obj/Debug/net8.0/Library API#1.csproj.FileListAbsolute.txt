@@ -134,3 +134,4 @@ C:\Users\HP\source\repos\Library API#1\Library API#1\obj\Debug\net8.0\refint\Lib
 C:\Users\HP\source\repos\Library API#1\Library API#1\obj\Debug\net8.0\Library API#1.pdb
 C:\Users\HP\source\repos\Library API#1\Library API#1\obj\Debug\net8.0\Library API#1.genruntimeconfig.cache
 C:\Users\HP\source\repos\Library API#1\Library API#1\obj\Debug\net8.0\ref\Library API#1.dll
+C:\Users\HP\source\repos\Library API#1\Library API#1\obj\Debug\net8.0\Library API#1.sourcelink.json

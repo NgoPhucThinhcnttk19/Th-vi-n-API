@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library_API_1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240415025706_firstcode")]
-    partial class firstcode
+    [Migration("20240417021533_codefirt")]
+    partial class codefirt
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,8 +75,8 @@ namespace Library_API_1.Migrations
                     b.Property<string>("CoverUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DateAdded")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("Dateread")
                         .HasColumnType("datetime2");
@@ -84,16 +84,16 @@ namespace Library_API_1.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Geren")
+                    b.Property<int>("Genre")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("IsRead")
+                    b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
                     b.Property<int>("PublishersID")
                         .HasColumnType("int");
 
-                    b.Property<int>("Rate")
+                    b.Property<int?>("Rate")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
