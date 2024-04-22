@@ -1,5 +1,6 @@
 ﻿using Library_API_1.Data;
 using Library_API_1.Model;
+using Library_API_1.Models;
 using Library_API_1.Models.DOT;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ namespace Library_API_1.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class Bookcontroller : Controller
+    public class Bookcontroller : ControllerBase
     {
         private readonly AppDbContext _dbcontext;
         public Bookcontroller(AppDbContext dbcontext)
@@ -17,29 +18,62 @@ namespace Library_API_1.Controllers
         }
         /// Get: api/book
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Books>>> GetBooks()
+        [Route("id")]
+        public IActionResult GetBookById([FromRoute] int id)
         {
-            return await _dbcontext.Books.ToListAsync();
-        }
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Books>> GetBooks(int id)
-        {
-            var Books = await _dbcontext.Books.FindAsync(id);
-            if (Books == null)
+            // Get Book Domain model form Db
+            var bookwithDomain = _dbcontext.Books.Where(n => n.BookId == id);
+            if (bookwithDomain == null)
             {
                 return NotFound();
             }
-            return Books;
+            //             Domain model from DTOS
+            var bookwithIdDTO = bookwithDomain.Select(Books => new BookDTO()
+            {
+                Id = Books.BookId,
+                Title = Books.Title,
+                Description = Books.Description,
+                IsRead = Books.IsRead,
+                DateRead = Books.Dateread,
+                Rate = Books.Rate,
+                Genre = Books.Genre,
+                CoverUrl = Books.CoverUrl,
+                PublisherName = Books.Publisher.Name,
+                AuthorNames = Books.Book_Authors.Select(n => n.Author.FullName).ToList(),
+            });
+            return Ok(bookwithIdDTO);  
         }
-        [HttpPost]
-
-        public async Task<ActionResult<Books>> PostBooks(Books books)
+        [HttpPost("add-book")]
+        public IActionResult AddBook([FromBody] AddBookRequestDTO addBookRequestDTO)
         {
-            _dbcontext.Books.Add(books);
-            await _dbcontext.SaveChangesAsync();
-            return CreatedAtAction("GetPost", new { id = books.BookId }, books);
+            //   DTO to Domain Model 
+            var bookDomainModel = new Books
+            {
+                Title = addBookRequestDTO.Title,
+                Description = addBookRequestDTO.Description,
+                IsRead= addBookRequestDTO.IsRead,
+                Rate = addBookRequestDTO.Rate,
+                Genre = addBookRequestDTO.Genre,
+                CoverUrl= addBookRequestDTO.CoverUrl,
+                DateAdded = addBookRequestDTO.DateAdded,
+                PublishersID = addBookRequestDTO.PublishersID,
+            };
+            //Use Domain Model to create book
+            _dbcontext.Books.Add(bookDomainModel);
+            _dbcontext.SaveChanges();
+            foreach (var id in addBookRequestDTO.AuthorId)
+            {
+                var _book_author = new Book_Author()
+                {
+                    BookId = bookDomainModel.BookId,
+                    AuthorsId = id
+                };
+                _dbcontext.Book_Authors.Add(_book_author);
+                _dbcontext.SaveChanges();
+            }
+            return Ok();
         }
-        [HttpPut("{id}")]
+        [HttpPut("id")]
         public async Task<IActionResult> PutBooks(int id, Books books)
         {
             if (id != books.BookId)
@@ -64,7 +98,7 @@ namespace Library_API_1.Controllers
             }
             return NoContent();
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("id")]
         public async Task<IActionResult> DeleteBooks(int id)
         {
             var Books = await _dbcontext.Books.FindAsync(id);
@@ -94,10 +128,7 @@ namespace Library_API_1.Controllers
             }).ToList();
             return Ok(allBooksDomain);
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
+        
         private bool BooksExists(int id)
 		{
 			return _dbcontext.Books.Any(e => e.BookId == id);
