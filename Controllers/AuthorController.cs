@@ -2,54 +2,53 @@
 using Library_API_1.Models.DOT;
 using Microsoft.AspNetCore.Mvc;
 using Library_API_1.Models;
-
+using Library_API_1.Model;
+using Library_API_1.Repositories;
 namespace Library_API_1.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class AuthorController : Controller
+    [ApiController]
+    public class AuthorsController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
-        public AuthorController(AppDbContext dbContext)
+        private readonly IAuthorRepository _authorRepository;
+        public AuthorsController(AppDbContext dbContext, IAuthorRepository
+       authorRepository)
         {
             _dbContext = dbContext;
+            _authorRepository = authorRepository;
         }
-        [HttpGet("get-all-authors")]
-        public IActionResult GetAllAuthors()
+        [HttpGet("get-all-author")]
+        public IActionResult GetAllAuthor()
         {
-            //var allBooksDomain=_dbContext.Book.ToList();
-            var allAuthorsDomain = _dbContext.Authors;
-            //Map domain models to DTOs
-            var allBooksDTO = allAuthorsDomain.Select(Authors => new AuthorDTO()
-            {
-                Id = Authors.AuthorsId,
-                FullName = Authors.FullName,
-                Bookname = Authors.Book_Authors.Select(n => n.Book.Title).ToList(),
-            }).ToList();
-            return Ok(allAuthorsDomain);
-
+            var allAuthors = _authorRepository.GellAllAuthors();
+            return Ok(allAuthors);
         }
-        [HttpGet]
-        [Route("get-authors-by-id/{id}")]
-        public IActionResult GetAuthorById([FromRoute] int id)
+        [HttpGet("get-author-by-id/{id}")]
+        public IActionResult GetAuthorById(int id)
         {
-            //get book domain model from db
-            var authorWithDomain = _dbContext.Authors.Where(n => n.AuthorsId == id);
-            if (authorWithDomain == null)
-            {
-                return NotFound();
-            }
-
-            //map domain model to DTO
-            var authorWithIdDTO = authorWithDomain.Select(Authors => new AuthorDTO()
-            {
-                Id = Authors.AuthorsId,
-                FullName = Authors.FullName,
-                Bookname = Authors.Book_Authors.Select(n => n.Book.Title).ToList(),
-            });
-            return Ok(authorWithIdDTO);
-
+            var authorWithId = _authorRepository. GetAuthorById(id);
+            return Ok(authorWithId);
         }
-
+        [HttpPost("add - author")]
+        public IActionResult AddAuthors([FromBody] AddAuthorRequestDTO
+       addAuthorRequestDTO)
+        {
+            var authorAdd = _authorRepository.AddAuthor(addAuthorRequestDTO);
+            return Ok();
+        }
+        [HttpPut("update-author-by-id/{id}")]
+        public IActionResult UpdateBookById(int id, [FromBody] AuthorNoIdDTO
+       authorDTO)
+        {
+            var authorUpdate = _authorRepository.UpdateAuthorById(id, authorDTO);
+            return Ok(authorUpdate);
+        }
+        [HttpDelete("delete-author-by-id/{id}")]
+        public IActionResult DeleteBookById(int id)
+        {
+            var authorDelete = _authorRepository.DeleteAuthorById(id);
+            return Ok();
+        }
     }
 }
