@@ -19,10 +19,10 @@ namespace Library_API_1.Controllers
             _bookRepository = bookRepository;
         }
         [HttpGet("get-all-books")]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery)
         {
             // su dung reposity pattern 
-            var allBooks = _bookRepository.GetAllBooks();
+            var allBooks = _bookRepository.GetAllBooks(filterOn, filterQuery);
             return Ok(allBooks);
         }
         [HttpGet]

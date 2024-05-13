@@ -2,10 +2,7 @@
 using Library_API_1.Models.DOT;
 
 namespace Library_API_1.Repositories
-{
-    public interface IAuthorRepository
-    {
-        public interface IAuthorRepository
+{     public interface IAuthorRepository
         {
             List<AuthorDTO> GellAllAuthors();
             AuthorNoIdDTO GetAuthorById(int id);
@@ -14,4 +11,3 @@ namespace Library_API_1.Repositories
             Authors? DeleteAuthorById(int id);
         }
     }
-}

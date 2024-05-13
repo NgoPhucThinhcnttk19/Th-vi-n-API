@@ -1,10 +1,11 @@
 ﻿using Library_API_1.Data;
 using Library_API_1.Models.DOT;
 using Microsoft.AspNetCore.Mvc;
+using Library_API_1.Data;
 using Library_API_1.Models;
-using Library_API_1.Model;
 using Library_API_1.Repositories;
-namespace Library_API_1.Controllers
+
+namespace ThuVien_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -27,7 +28,7 @@ namespace Library_API_1.Controllers
         [HttpGet("get-author-by-id/{id}")]
         public IActionResult GetAuthorById(int id)
         {
-            var authorWithId = _authorRepository. GetAuthorById(id);
+            var authorWithId = _authorRepository.GetAuthorById(id);
             return Ok(authorWithId);
         }
         [HttpPost("add - author")]
