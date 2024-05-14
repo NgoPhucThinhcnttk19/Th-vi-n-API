@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Library_API_1.Data;
 using Library_API_1.Models;
 using Library_API_1.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ThuVien_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuthorsController : ControllerBase
     {
         private readonly AppDbContext _dbContext;

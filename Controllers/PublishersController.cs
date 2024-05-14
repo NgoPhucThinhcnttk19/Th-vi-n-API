@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Library_API_1.Models.DOT;
 using Library_API_1.Repositories;
 using Library_API_1.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 namespace Library_API_1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PublishersController : ControllerBase
     {
         private readonly AppDbContext _dbContext;

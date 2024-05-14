@@ -2,6 +2,7 @@
 using Library_API_1.Model;
 using Library_API_1.Models.DOT;
 using Library_API_1.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,7 @@ namespace Library_API_1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BooksController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
@@ -19,14 +21,19 @@ namespace Library_API_1.Controllers
             _bookRepository = bookRepository;
         }
         [HttpGet("get-all-books")]
-        public IActionResult GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery)
+        [Authorize(Roles = "Read")]
+        public IActionResult GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
+ [FromQuery] string? sortBy, [FromQuery] bool isAscending,
+ [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 100)
         {
             // su dung reposity pattern 
-            var allBooks = _bookRepository.GetAllBooks(filterOn, filterQuery);
+            var allBooks = _bookRepository.GetAllBooks(filterOn, filterQuery, sortBy,
+           isAscending, pageNumber, pageSize);
             return Ok(allBooks);
         }
         [HttpGet]
         [Route("get-book-by-id/{id}")]
+        [Authorize(Roles ="Read,Write")]
         public IActionResult GetBookById([FromRoute] int id)
         {
             var bookWithIdDTO = _bookRepository.GetBookById(id);
